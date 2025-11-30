@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Caixa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Monitoramento do caixa</p>
+        <h1>Painel das unidades</h1>
+        <p class="lede">Dados carregados direto da planilha publicada. Veja rapidamente onde existem divergencias e o saldo atual de cada unidade.</p>
+      </div>
+      <div class="status-pill" id="dataStatus">Carregando...</div>
+    </header>
+
+    <section class="summary" id="summaryCards">
+      <article class="card">
+        <p class="label">Unidades</p>
+        <h2 id="totalUnits">-</h2>
+      </article>
+      <article class="card alert">
+        <p class="label">Unidades com divergencia</p>
+        <h2 id="divergentUnits">-</h2>
+      </article>
+      <article class="card">
+        <p class="label">Saldo atual total</p>
+        <h2 id="totalSaldo">-</h2>
+      </article>
+      <article class="card">
+        <p class="label">Ultima data</p>
+        <h2 id="lastDate">-</h2>
+      </article>
+    </section>
+
+    <section class="filters">
+      <div class="control">
+        <label for="unitFilter">Filtrar por unidade</label>
+        <select id="unitFilter"></select>
+      </div>
+      <div class="control">
+        <label for="statusFilter">Status</label>
+        <select id="statusFilter">
+          <option value="ALL">Todos</option>
+          <option value="OK">OK</option>
+          <option value="DIVERGENTE">Divergente</option>
+        </select>
+      </div>
+      <div class="control">
+        <label for="searchInput">Buscar por data ou texto</label>
+        <input id="searchInput" type="text" placeholder="Ex: 05/11 ou Benfica">
+      </div>
+      <button class="refresh" id="refreshBtn">Recarregar dados</button>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Movimento detalhado</h3>
+        <p id="rowCount">0 registros</p>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Unidade</th>
+              <th>Abertura do Caixa</th>
+              <th>Saldo dia anterior</th>
+              <th>Saldo do caixa</th>
+              <th>Recebido em dinheiro</th>
+              <th>Sangria</th>
+              <th>Despesas (dinheiro)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
