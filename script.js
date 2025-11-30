@@ -183,13 +183,13 @@ function renderTable(rows) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${row.data}</td>
-      <td>${row.unidade}</td>
       <td class="money muted">${formatMoney(row.abertura)}</td>
-      <td class="money muted">${formatMoney(row.saldoDiaAnterior)}</td>
-      <td class="money">${formatMoney(row.saldoCaixa)}</td>
       <td class="money muted">${formatMoney(row.recebidoDinheiro)}</td>
-      <td class="money muted">${formatMoney(row.sangria)}</td>
       <td class="money muted">${formatMoney(row.despesasDinheiro)}</td>
+      <td class="money muted">${formatMoney(row.totalDinheiro)}</td>
+      <td class="money">${formatMoney(row.saldoCaixa)}</td>
+      <td class="money muted">${formatMoney(row.saldoDiaAnterior)}</td>
+      <td class="money muted">${formatMoney(row.difAberturaSaldoAnterior)}</td>
       <td>${statusBadge(row.status)}</td>
     `;
     tbody.appendChild(tr);
