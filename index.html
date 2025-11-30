@@ -20,6 +20,35 @@
       <div class="status-pill" id="dataStatus">Carregando...</div>
     </header>
 
+    <div class="sticky-topper">
+      <section class="summary" id="summaryCards">
+        <article class="card">
+          <p class="label">Unidades</p>
+          <h2 id="totalUnits">-</h2>
+        </article>
+        <article class="card alert">
+          <p class="label">Unidades com divergencia</p>
+          <h2 id="divergentUnits">-</h2>
+        </article>
+        <article class="card">
+          <p class="label">Saldo atual total</p>
+          <h2 id="totalSaldo">-</h2>
+        </article>
+        <article class="card">
+          <p class="label">Ultima data</p>
+          <h2 id="lastDate">-</h2>
+        </article>
+      </section>
+
+      <div class="panel-header floating-header">
+        <div>
+          <p class="eyebrow small">Tabela</p>
+          <h3>Movimento detalhado</h3>
+        </div>
+        <p id="rowCount">0 registros</p>
+      </div>
+    </div>
+
     <section class="filters">
       <div class="control">
         <label for="unitFilter">Filtrar por unidade</label>
@@ -41,10 +70,6 @@
     </section>
 
     <section class="panel">
-      <div class="panel-header">
-        <h3>Movimento detalhado</h3>
-        <p id="rowCount">0 registros</p>
-      </div>
       <div class="table-wrapper">
         <table>
           <thead>
