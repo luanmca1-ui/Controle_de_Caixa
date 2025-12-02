@@ -20,6 +20,8 @@ function bindEvents() {
   document.getElementById("unitFilter").addEventListener("change", applyFilters);
   document.getElementById("statusFilter").addEventListener("change", applyFilters);
   document.getElementById("searchInput").addEventListener("input", applyFilters);
+  document.getElementById("dateFrom").addEventListener("change", applyFilters);
+  document.getElementById("dateTo").addEventListener("change", applyFilters);
 }
 
 async function loadData() {
@@ -81,7 +83,8 @@ function parseCSV(text) {
       data,
       abertura: toNumber(abertura),
       sangria: toNumber(sangria),
-      unidade: unidade || "Nao informado",
+      unidadeOriginal: unidade || "Nao informado",
+      unidade: cleanUnit(unidade),
       recebidoDinheiro: toNumber(recebidoDinheiro),
       troco: toNumber(troco),
       despesasDinheiro: toNumber(despesasDinheiro),
@@ -116,9 +119,22 @@ function normalizeStatus(raw) {
   return val;
 }
 
+function cleanUnit(text) {
+  if (!text) return "Nao informado";
+  const cleaned = text.replace(/the barber express\s*/i, "").trim();
+  return cleaned || text.trim();
+}
+
 function parseDatePtBR(str) {
   const [d, m, y] = str.split("/").map((v) => parseInt(v, 10));
   if (!d || !m || !y) return null;
+  return new Date(y, m - 1, d);
+}
+
+function parseDateInput(value) {
+  if (!value) return null;
+  const [y, m, d] = value.split("-").map((v) => parseInt(v, 10));
+  if (!y || !m || !d) return null;
   return new Date(y, m - 1, d);
 }
 
@@ -132,6 +148,8 @@ function applyFilters() {
   const unit = document.getElementById("unitFilter").value;
   const status = document.getElementById("statusFilter").value;
   const search = document.getElementById("searchInput").value.toLowerCase();
+  const dateFrom = parseDateInput(document.getElementById("dateFrom").value);
+  const dateTo = parseDateInput(document.getElementById("dateTo").value);
 
   state.filtered = state.rows.filter((row) => {
     const matchUnit = unit === "ALL" || row.unidade === unit;
@@ -142,7 +160,10 @@ function applyFilters() {
       row.data.toLowerCase().includes(search) ||
       row.unidade.toLowerCase().includes(search) ||
       row.status.toLowerCase().includes(search);
-    return matchUnit && matchStatus && matchSearch;
+    const rowDate = parseDatePtBR(row.data);
+    const matchFrom = !dateFrom || (rowDate && rowDate >= dateFrom);
+    const matchTo = !dateTo || (rowDate && rowDate <= dateTo);
+    return matchUnit && matchStatus && matchSearch && matchFrom && matchTo;
   });
 
   renderTable(state.filtered);
@@ -183,6 +204,7 @@ function renderTable(rows) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${row.data}</td>
+      <td>${row.unidade}</td>
       <td class="money muted">${formatMoney(row.abertura)}</td>
       <td class="money muted">${formatMoney(row.recebidoDinheiro)}</td>
       <td class="money muted">${formatMoney(row.despesasDinheiro)}</td>

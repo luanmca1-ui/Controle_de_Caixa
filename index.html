@@ -66,6 +66,14 @@
         <label for="searchInput">Buscar por data ou texto</label>
         <input id="searchInput" type="text" placeholder="Ex: 05/11 ou Benfica">
       </div>
+      <div class="control">
+        <label for="dateFrom">Data inicial</label>
+        <input id="dateFrom" type="date">
+      </div>
+      <div class="control">
+        <label for="dateTo">Data final</label>
+        <input id="dateTo" type="date">
+      </div>
       <button class="refresh" id="refreshBtn">Recarregar dados</button>
     </section>
 
@@ -75,6 +83,7 @@
           <thead>
             <tr>
               <th>Data</th>
+              <th>Unidade</th>
               <th>Abertura do Caixa</th>
               <th>Recebido em Dinheiro</th>
               <th>Despesas pagas (dinheiro)</th>

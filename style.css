@@ -113,8 +113,8 @@ body {
 
 .filters {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px 10px;
   align-items: end;
   margin-bottom: 18px;
 }
