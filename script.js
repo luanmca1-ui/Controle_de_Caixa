@@ -1,8 +1,7 @@
 const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT63xZTk2mm-6LomO1T9J-7JA_rvRK-gYFFbsZsFJG69U0KKzg8KLhFd--Er31HBkspNOPJUiRwtjiy/pub?output=csv";
 const DATA_SOURCES = [
   DATA_URL,
-  // Fallback para contornar CORS em origem file:// ou ambientes mais restritos.
-  `https://cors.isomorphic-git.org/${DATA_URL}`
+  `https://cors.isomorphic-git.org/${DATA_URL}` // Fallback para origem file://
 ];
 
 const state = {
@@ -22,6 +21,8 @@ function bindEvents() {
   document.getElementById("searchInput").addEventListener("input", applyFilters);
   document.getElementById("dateFrom").addEventListener("change", applyFilters);
   document.getElementById("dateTo").addEventListener("change", applyFilters);
+  document.getElementById("clearFilters").addEventListener("click", resetFilters);
+  document.getElementById("tableBody").addEventListener("click", handleCopyClick);
 }
 
 async function loadData() {
@@ -58,7 +59,6 @@ async function fetchFirstAvailable(urls) {
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   const rows = [];
-  // Remove header
   lines.slice(1).forEach((line) => {
     if (!line.trim()) return;
     const cols = splitCSV(line);
@@ -102,7 +102,6 @@ function parseCSV(text) {
 }
 
 function splitCSV(line) {
-  // Basic CSV split that respects quoted commas
   const regex = /,(?=(?:[^"]*"[^"]*")*[^"]*$)/;
   return line.split(regex).map((c) => c.replace(/^"|"$/g, "").replace(/""/g, '"'));
 }
@@ -121,7 +120,7 @@ function normalizeStatus(raw) {
 
 function cleanUnit(text) {
   if (!text) return "Nao informado";
-  const cleaned = text.replace(/the barber express\s*/i, "").trim();
+  const cleaned = text.replace(/the barber express\s*/i, "").replace(/the barber\s*/i, "").trim();
   return cleaned || text.trim();
 }
 
@@ -136,6 +135,14 @@ function parseDateInput(value) {
   const [y, m, d] = value.split("-").map((v) => parseInt(v, 10));
   if (!y || !m || !d) return null;
   return new Date(y, m - 1, d);
+}
+
+function formatDateShort(str) {
+  const parts = str.split("/");
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  if (!day || !month) return str;
+  return `${day}/${month}`;
 }
 
 function populateFilters(rows) {
@@ -196,6 +203,15 @@ function updateSummary(rows) {
   document.getElementById("lastDate").textContent = lastDateObj ? lastDateObj.toLocaleDateString("pt-BR") : "-";
 }
 
+function resetFilters() {
+  document.getElementById("unitFilter").value = "ALL";
+  document.getElementById("statusFilter").value = "ALL";
+  document.getElementById("searchInput").value = "";
+  document.getElementById("dateFrom").value = "";
+  document.getElementById("dateTo").value = "";
+  applyFilters();
+}
+
 function renderTable(rows) {
   const tbody = document.getElementById("tableBody");
   tbody.innerHTML = "";
@@ -203,7 +219,7 @@ function renderTable(rows) {
   rows.forEach((row) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${row.data}</td>
+      <td>${formatDateShort(row.data)}</td>
       <td>${row.unidade}</td>
       <td class="money muted">${formatMoney(row.abertura)}</td>
       <td class="money muted">${formatMoney(row.recebidoDinheiro)}</td>
@@ -213,6 +229,7 @@ function renderTable(rows) {
       <td class="money muted">${formatMoney(row.saldoDiaAnterior)}</td>
       <td class="money muted">${formatMoney(row.difAberturaSaldoAnterior)}</td>
       <td>${statusBadge(row.status)}</td>
+      <td><button class="copy-btn" data-copy="${escapeAttr(analysisText(row))}">Copiar analise</button></td>
     `;
     tbody.appendChild(tr);
   });
@@ -226,9 +243,43 @@ function statusBadge(status) {
 }
 
 function formatMoney(value) {
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 2 }).format(value);
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
+  }).format(value);
 }
 
 function setStatus(text) {
   document.getElementById("dataStatus").textContent = text;
+}
+
+function analysisText(row) {
+  const dif = row.difAberturaSaldoAnterior;
+  const statusText = row.status || "Divergencia";
+  return `No dia ${formatDateShort(row.data)} ha uma diferenca de ${formatMoney(dif)} comparando a abertura versus o saldo do dia anterior. Unidade ${row.unidade}. Status ${statusText}. Saldo atual ${formatMoney(row.saldoCaixa)}.`;
+}
+
+function handleCopyClick(e) {
+  const btn = e.target.closest(".copy-btn");
+  if (!btn) return;
+  const text = btn.getAttribute("data-copy") || "";
+  if (!text) return;
+  navigator.clipboard
+    .writeText(text)
+    .then(() => setStatus("Analise copiada"))
+    .catch(() => {
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      document.body.removeChild(temp);
+      setStatus("Analise copiada");
+    });
+}
+
+function escapeAttr(str) {
+  return (str || "").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

@@ -74,7 +74,10 @@
         <label for="dateTo">Data final</label>
         <input id="dateTo" type="date">
       </div>
-      <button class="refresh" id="refreshBtn">Recarregar dados</button>
+      <div class="actions">
+        <button class="ghost" id="clearFilters">Limpar filtros</button>
+        <button class="refresh" id="refreshBtn">Recarregar dados</button>
+      </div>
     </section>
 
     <section class="panel">
@@ -84,38 +87,20 @@
             <tr>
               <th>Data</th>
               <th>Unidade</th>
-              <th>Abertura do Caixa</th>
+              <th>Abertura</th>
               <th>Recebido em Dinheiro</th>
-              <th>Despesas pagas (dinheiro)</th>
+              <th>Despesas Caixa</th>
               <th>Total em dinheiro</th>
               <th>Saldo do caixa</th>
               <th>Saldo dia anterior</th>
-              <th>Dif Abertura vs SaldoAnterior</th>
-              <th>Status Divergencia</th>
+              <th>Abertura vs Saldo anterior</th>
+              <th>Status Caixa</th>
+              <th>Analise</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
         </table>
       </div>
-    </section>
-
-    <section class="summary" id="summaryCards">
-      <article class="card">
-        <p class="label">Unidades</p>
-        <h2 id="totalUnits">-</h2>
-      </article>
-      <article class="card alert">
-        <p class="label">Unidades com divergencia</p>
-        <h2 id="divergentUnits">-</h2>
-      </article>
-      <article class="card">
-        <p class="label">Saldo atual total</p>
-        <h2 id="totalSaldo">-</h2>
-      </article>
-      <article class="card">
-        <p class="label">Ultima data</p>
-        <h2 id="lastDate">-</h2>
-      </article>
     </section>
   </main>
   <script src="script.js"></script>

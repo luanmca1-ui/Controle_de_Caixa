@@ -139,6 +139,13 @@ input {
   color: var(--text);
 }
 
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .refresh {
   padding: 12px 14px;
   border-radius: 12px;
@@ -148,6 +155,25 @@ input {
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 14px 28px rgba(55, 185, 255, 0.35);
+}
+
+.ghost {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(17, 29, 51, 0.8);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.copy-btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(17, 29, 51, 0.85);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
 }
 
 .panel {
